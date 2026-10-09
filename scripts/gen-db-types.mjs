@@ -32,8 +32,13 @@ const content =
 if (args.includes('--check')) {
   // The PostgREST version differs between local and hosted projects; ignore it.
   const normalize = (text) => text.replace(/PostgrestVersion: "[^"]*"/, 'PostgrestVersion: ""');
-  if (normalize(readFileSync(output, 'utf8')) !== normalize(content)) {
+  const committed = normalize(readFileSync(output, 'utf8')).split('\n');
+  const fresh = normalize(content).split('\n');
+  const line = fresh.findIndex((text, i) => text !== committed[i]);
+  if (line !== -1 || committed.length !== fresh.length) {
+    const at = line === -1 ? Math.min(fresh.length, committed.length) : line;
     console.error(`${output} is out of date. Run \`npm run db:types\` and commit the result.`);
+    console.error(`First difference at line ${at + 1}:\n  committed: ${committed[at]}\n  generated: ${fresh[at]}`);
     process.exit(1);
   }
   console.log('Database types are up to date.');
