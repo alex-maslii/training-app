@@ -209,7 +209,7 @@ Nutrient keys are fixed (energy_kcal, protein_g, carbs_available_g, fat_g, satur
 - [x] `supabase db push` applied (profiles migration live).
 - [x] `supabase config push` applied; generated types in `src/lib/database.types.ts` (`npm run db:types`).
 - [x] Web sign-in verified end to end on 2026-10-09: owner signed in, profile row auto-created.
-- [ ] Custom SMTP (e.g. Resend) configured, then re-enable the 6-digit code email template in `supabase/config.toml`. Free tier blocks template changes on the default email provider, which also only sends a few emails per hour and only to team members. Until then, the default email contains a sign-in link, which works on web.
+- [x] Custom SMTP (2026-10-09): Gmail (`smtp.gmail.com:587`, owner's personal Gmail with an app password), set in the Supabase dashboard; 60 s minimum interval per user; English-only 6-digit code template for magic link and confirmation emails (`supabase/templates/magic_link.html`). Gmail allows ~500 emails/day and looks personal: move to a domain sender (e.g. Resend) before public launch, then add the Polish text back.
 - [ ] Apple Developer account; final bundle ID (placeholder `com.calorietracker.app`); Sign in with Apple.
 - [ ] EAS dev build installed on the owner's phone.
 - **Exit:** sign in on the phone and in a browser; an empty "Today" screen loads the profile from Supabase.
@@ -311,7 +311,7 @@ Nutrient keys are fixed (energy_kcal, protein_g, carbs_available_g, fat_g, satur
 
 | Phase | Status |
 |---|---|
-| 0 Foundations | Web exit check passed; remaining: custom SMTP for code email, Apple account, iOS dev build |
+| 0 Foundations | Web exit check passed; code email via Gmail SMTP; remaining: iOS build on the owner's iPhone (free Apple ID), Apple Developer account |
 | 1 Food logging MVP | Live on Supabase; waiting for owner test and Data sources screen |
 | 2 Faster logging | Not started |
 | 3 Apple Health workouts | Not started |
