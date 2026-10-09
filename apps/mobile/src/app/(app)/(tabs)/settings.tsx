@@ -27,6 +27,10 @@ export default function SettingsScreen() {
             <ThemedText type="linkPrimary">{t('settings.profile')} ›</ThemedText>
           </Pressable>
 
+          <Pressable accessibilityRole="button" onPress={() => router.push('/sources')}>
+            <ThemedText type="linkPrimary">{t('settings.sources')} ›</ThemedText>
+          </Pressable>
+
           <ThemedText type="smallBold">{t('settings.language')}</ThemedText>
           <ThemedView style={styles.row}>
             {LANGUAGES.map((language) => {

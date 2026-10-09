@@ -2,7 +2,7 @@ import { scaleNutrients } from '@calorie-tracker/core';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator } from 'react-native';
+import { ActivityIndicator, Pressable } from 'react-native';
 
 import { MealPicker } from '@/components/meal-picker';
 import { NutritionTable } from '@/components/nutrition-table';
@@ -77,9 +77,11 @@ export default function FoodScreen() {
       <Card>
         <NutritionTable nutrients={grams !== null ? scaleNutrients(per100, grams) : per100} />
       </Card>
-      <ThemedText type="small" themeColor="textSecondary">
-        {t(`food.source.${food.data.source}`)}
-      </ThemedText>
+      <Pressable accessibilityRole="link" onPress={() => router.push('/sources')}>
+        <ThemedText type="small" themeColor="textSecondary">
+          {t(`food.source.${food.data.source}`)} ›
+        </ThemedText>
+      </Pressable>
 
       {addEntry.isError && <ThemedText>{t('common.error')}</ThemedText>}
       <Button
