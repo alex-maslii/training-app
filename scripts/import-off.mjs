@@ -8,11 +8,12 @@
  * Usage:
  *   node scripts/import-off.mjs            # download, filter, write SQL batches to tmp/off-import
  *   node scripts/import-off.mjs --apply    # same, then run the batches on the Supabase project
- *                                          # (SUPABASE_PROJECT_REF if set, else the linked project)
+ *                                          # (SUPABASE_PROJECT_REF + SUPABASE_ACCESS_TOKEN via the
+ *                                          # Management API if set, else the linked project via the CLI)
  *   node scripts/import-off.mjs --file path/to/products.csv.gz [--apply]
  */
 import { execFileSync } from 'node:child_process';
-import { createReadStream, mkdirSync, rmSync, writeFileSync } from 'node:fs';
+import { createReadStream, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { createInterface } from 'node:readline';
 import { Readable } from 'node:stream';
 import { fileURLToPath } from 'node:url';
@@ -150,17 +151,20 @@ console.log(`Wrote ${files.length} batch files to ${outDir}`);
 
 if (apply) {
   const projectRef = process.env.SUPABASE_PROJECT_REF;
-  // --project-ref selects the remote project but still needs --linked.
-  const target = projectRef ? ['--linked', '--project-ref', projectRef] : ['--linked'];
+  const accessToken = process.env.SUPABASE_ACCESS_TOKEN;
+  if (projectRef && !accessToken) throw new Error('SUPABASE_PROJECT_REF needs SUPABASE_ACCESS_TOKEN');
   const failed = [];
   for (const file of files) {
     console.log(`Applying ${file}`);
     try {
-      execFileSync('npx', ['--yes', SUPABASE_CLI, 'db', 'query', ...target, '-f', file], {
-        stdio: ['ignore', 'ignore', 'inherit'],
-      });
-    } catch {
+      if (projectRef) await queryManagementApi(projectRef, accessToken, readFileSync(file, 'utf8'));
+      else
+        execFileSync('npx', ['--yes', SUPABASE_CLI, 'db', 'query', '--linked', '-f', file], {
+          stdio: ['ignore', 'ignore', 'inherit'],
+        });
+    } catch (error) {
       // Keep going: one bad batch should not block the other products.
+      if (projectRef) console.error(error.message);
       failed.push(file);
     }
   }
@@ -169,4 +173,19 @@ if (apply) {
     process.exit(1);
   }
   console.log('Import applied.');
+}
+
+// HTTPS instead of a direct Postgres connection: GitHub runners have no IPv6,
+// and the direct database host is IPv6-only. Needs a token with database write access.
+async function queryManagementApi(projectRef, accessToken, query) {
+  const response = await fetch(`https://api.supabase.com/v1/projects/${projectRef}/database/query`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query }),
+    signal: AbortSignal.timeout(120_000),
+  });
+  if (!response.ok) {
+    // The body is a Postgres or API error message, never the token.
+    throw new Error(`Management API HTTP ${response.status}: ${(await response.text()).slice(0, 500)}`);
+  }
 }
