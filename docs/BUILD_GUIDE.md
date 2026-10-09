@@ -131,7 +131,7 @@ EU labels and databases differ from US ones, and the data model must handle both
 - **Barcodes:** EAN-13 is standard. Codes starting with `02` or `20`–`29` are in-store codes (weighed produce, deli, bakery) that encode price or weight, not a product, so they must skip the lookup and go straight to search or the "create food" form.
 - **Databases:** Open Food Facts is strongest in Europe (French origin, large coverage in FR, DE, ES, IT, BE, CH), which makes barcode scanning work well. For generic foods, seed a **European** database instead of, or in addition to, USDA:
   - **EU FCDB** (EFSA, open access, ~28,000 foods, harmonised across countries).
-  - **BLS 4.0** (Germany, Max Rubner-Institut, free since 4.0, 7,140 foods, up to 138 nutrients).
+  - **BLS 4.0** (Germany, Max Rubner-Institut, free since 4.0, 7,140 foods, up to 138 nutrients). Usage terms (BLS 4.0 documentation, section 9.3): free use including app development, no licence barriers; cite the source ("Max Rubner-Institut (2025): Bundeslebensmittelschlüssel (BLS), Version 4.0"). The generated seed may therefore live in the public repo.
   - **CIQUAL** (France, ANSES, free, ~2,600 foods).
   - **Fineli** (Finland, open data). Other national tables: NEVO (Netherlands), CoFID (UK), Frida (Denmark).
   - Pick the owner's country table first; check each licence before shipping to other users.
@@ -286,7 +286,7 @@ Nutrient keys are fixed (energy_kcal, protein_g, carbs_available_g, fat_g, satur
 - Production deploy from `main` behind a GitHub Environment with manual approval: `supabase db push` + `supabase functions deploy`, scoped token.
 - EAS setup: `eas.json` with development / preview / production profiles, `appVersionSource: remote`; iOS simulator and Android builds need no Apple account. EAS Workflows (`.eas/workflows/`) for mobile builds; GitHub Actions stays the test gate.
 - Per-PR preview: EAS Update to a branch named after the PR (OTA update opened in the dev client), not a full build per PR.
-- Branch protection on `main` (needs a public repo or GitHub Pro $4/month for private repos).
+- Done 2026-10-09: repo made public; `main` is protected (PR required, `check` must pass and be up to date, no force push or deletion, conversations resolved; admins can bypass). GitHub secret scanning with push protection, Dependabot alerts and security updates are on.
 
 **When the Apple account exists (~$30/month incl. Apple):**
 - Device builds with internal distribution; production workflow on `main` using fingerprint → reuse build + OTA update, or build + submit to TestFlight. App Store Connect API key stored in EAS (`eas credentials`), not in GitHub.
