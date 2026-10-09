@@ -1,0 +1,152 @@
+{
+  "common": {
+    "error": "Coś poszło nie tak. Spróbuj ponownie.",
+    "save": "Zapisz",
+    "delete": "Usuń",
+    "kcal": "kcal",
+    "gramsAmount": "{{amount}} g"
+  },
+  "signIn": {
+    "title": "Zaloguj się",
+    "subtitle": "Wyślemy Ci 6-cyfrowy kod e-mailem.",
+    "emailLabel": "E-mail",
+    "emailPlaceholder": "ty@przyklad.pl",
+    "sendCode": "Wyślij kod",
+    "codeLabel": "Kod z e-maila",
+    "codeSentTo": "Kod wysłany na {{email}}",
+    "verify": "Zaloguj się",
+    "changeEmail": "Użyj innego adresu",
+    "invalidEmail": "Wpisz poprawny adres e-mail.",
+    "invalidCode": "Wpisz 6-cyfrowy kod."
+  },
+  "tabs": {
+    "today": "Dziś",
+    "settings": "Ustawienia"
+  },
+  "today": {
+    "eaten": "Zjedzone",
+    "remaining": "Pozostało",
+    "completeProfile": "Uzupełnij profil, aby otrzymać dzienny cel kalorii.",
+    "target": "Cel",
+    "over": "Ponad cel",
+    "setUpProfile": "Uzupełnij profil",
+    "addFood": "Dodaj produkt",
+    "previousDay": "Poprzedni dzień",
+    "nextDay": "Następny dzień",
+    "goToToday": "Dziś",
+    "emptyMeal": "Nic jeszcze nie dodano"
+  },
+  "settings": {
+    "account": "Konto",
+    "language": "Język",
+    "signOut": "Wyloguj się",
+    "profile": "Profil i cel"
+  },
+  "language": {
+    "pl": "Polski",
+    "en": "English"
+  },
+  "meals": {
+    "breakfast": "Śniadanie",
+    "lunch": "Obiad",
+    "dinner": "Kolacja",
+    "snack": "Przekąski"
+  },
+  "nutrients": {
+    "energy_kcal": "Wartość energetyczna",
+    "protein_g": "Białko",
+    "carbs_available_g": "Węglowodany",
+    "sugar_g": "w tym cukry",
+    "fat_g": "Tłuszcz",
+    "saturated_fat_g": "w tym kwasy tłuszczowe nasycone",
+    "fiber_g": "Błonnik",
+    "salt_g": "Sól"
+  },
+  "add": {
+    "title": "Dodaj produkt",
+    "searchPlaceholder": "Szukaj produktu (np. płatki owsiane)",
+    "scan": "Skanuj kod kreskowy",
+    "createFood": "Utwórz produkt",
+    "noResults": "Nie znaleziono. Spróbuj innego słowa albo utwórz produkt.",
+    "typeMore": "Wpisz co najmniej 2 litery.",
+    "unverified": "Niezweryfikowane",
+    "kcalPer100": "{{kcal}} kcal / 100 g"
+  },
+  "food": {
+    "title": "Produkt",
+    "amount": "Ilość",
+    "serving": "Porcja ({{grams}} g)",
+    "meal": "Posiłek",
+    "addToLog": "Dodaj do: {{meal}}",
+    "invalidGrams": "Wpisz ilość od 1 do 5000 g.",
+    "source": {
+      "bls": "Niemiecka baza wartości odżywczych (BLS 4.0)",
+      "off": "Open Food Facts",
+      "custom": "Twój produkt"
+    }
+  },
+  "entry": {
+    "title": "Edytuj wpis",
+    "deleteConfirm": "Usunąć ten wpis?"
+  },
+  "scan": {
+    "title": "Skanuj kod kreskowy",
+    "permission": "Aby skanować kody, potrzebny jest dostęp do aparatu.",
+    "allowCamera": "Zezwól na aparat",
+    "manualLabel": "Albo wpisz kod",
+    "lookUp": "Szukaj",
+    "looking": "Szukam produktu…",
+    "invalid": "To nie jest poprawny kod kreskowy. Sprawdź cyfry.",
+    "inStore": "To kod sklepowy (produkt ważony lub pakowany w sklepie). Wyszukaj produkt po nazwie.",
+    "notFound": "Nie znaleziono produktu. Możesz dodać go sam.",
+    "incomplete": "Ten produkt ma brakujące lub wątpliwe dane. Sprawdź je z etykietą.",
+    "unavailable": "Baza produktów nie odpowiada. Spróbuj za minutę.",
+    "scanAgain": "Skanuj ponownie"
+  },
+  "newFood": {
+    "title": "Nowy produkt",
+    "name": "Nazwa",
+    "brand": "Marka (opcjonalnie)",
+    "barcode": "Kod kreskowy",
+    "nutritionPer100": "Wartości odżywcze na 100 g, z etykiety",
+    "serving": "Wielkość porcji (opcjonalnie)",
+    "nameRequired": "Wpisz nazwę.",
+    "energyRequired": "Wpisz wartość energetyczną (kcal).",
+    "numberInvalid": "Używaj tylko liczb, np. 12,5.",
+    "energyMismatch": "Wartość energetyczna nie zgadza się z białkiem, węglowodanami i tłuszczem. Sprawdź etykietę."
+  },
+  "profile": {
+    "title": "Profil",
+    "sex": "Płeć (do wzoru na kalorie)",
+    "male": "Mężczyzna",
+    "female": "Kobieta",
+    "birthDate": "Data urodzenia",
+    "birthDatePlaceholder": "RRRR-MM-DD",
+    "height": "Wzrost",
+    "weight": "Aktualna waga",
+    "activity": "Aktywność w ciągu dnia (bez treningów)",
+    "activityLevels": {
+      "sedentary": "Głównie siedząca",
+      "light": "Lekko aktywna",
+      "active": "Dużo na nogach",
+      "veryActive": "Praca fizyczna"
+    },
+    "goal": "Cel",
+    "goals": {
+      "-500": "Schudnąć ~0,5 kg/tydz.",
+      "-250": "Chudnąć powoli",
+      "0": "Utrzymać wagę",
+      "250": "Przytyć powoli"
+    },
+    "consent": "Zgadzam się na przechowywanie moich danych o zdrowiu (waga, wymiary ciała, spożycie) w celu obliczania moich celów. Mogę w każdej chwili wycofać zgodę i usunąć dane.",
+    "consentRequired": "Zgoda jest potrzebna, aby zapisać wagę.",
+    "invalidBirthDate": "Wpisz datę w formacie 1990-05-31.",
+    "invalidHeight": "Wpisz wzrost w cm (50–272).",
+    "invalidWeight": "Wpisz wagę w kg (20–400).",
+    "incomplete": "Uzupełnij wszystkie pola.",
+    "yourTarget": "Twój dzienny cel: {{kcal}} kcal"
+  },
+  "app": {
+    "name": "Calorie Tracker"
+  }
+}
