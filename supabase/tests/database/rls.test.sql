@@ -51,11 +51,8 @@ select set_config('request.jwt.claims', '{"sub": "11111111-1111-1111-1111-111111
 
 -- Profiles
 select is((select count(*)::int from public.profiles), 1, 'Alice reads only her own profile');
-select is(
-  (with u as (update public.profiles set goal_kcal_delta = -500
-              where user_id = '22222222-2222-2222-2222-222222222222' returning 1)
-   select count(*)::int from u),
-  0,
+select is_empty(
+  $$ update public.profiles set goal_kcal_delta = -500 where user_id = '22222222-2222-2222-2222-222222222222' returning 1 $$,
   'Alice cannot update Bob''s profile'
 );
 select throws_ok(
@@ -104,26 +101,16 @@ select lives_ok(
      values ('11111111-1111-1111-1111-111111111111', 'custom', 'Zzqtest alice second', '{}') $$,
   'Alice can create her own custom food'
 );
-select is(
-  (with u as (update public.foods set name = 'Hacked'
-              where id = 'aaaaaaaa-0000-0000-0000-000000000001' returning 1)
-   select count(*)::int from u),
-  0,
+select is_empty(
+  $$ update public.foods set name = 'Hacked' where id = 'aaaaaaaa-0000-0000-0000-000000000001' returning 1 $$,
   'Alice cannot update public foods'
 );
-select is(
-  (with u as (update public.foods set name = 'Hacked'
-              where id = 'aaaaaaaa-0000-0000-0000-000000000003' returning 1)
-   select count(*)::int from u),
-  0,
+select is_empty(
+  $$ update public.foods set name = 'Hacked' where id = 'aaaaaaaa-0000-0000-0000-000000000003' returning 1 $$,
   'Alice cannot update Bob''s food'
 );
-select is(
-  (with d as (delete from public.foods
-              where id in ('aaaaaaaa-0000-0000-0000-000000000001', 'aaaaaaaa-0000-0000-0000-000000000003')
-              returning 1)
-   select count(*)::int from d),
-  0,
+select is_empty(
+  $$ delete from public.foods where id in ('aaaaaaaa-0000-0000-0000-000000000001', 'aaaaaaaa-0000-0000-0000-000000000003') returning 1 $$,
   'Alice cannot delete public foods or Bob''s food'
 );
 
@@ -150,18 +137,12 @@ select throws_ok(
   '42501', null,
   'Alice cannot log food for Bob'
 );
-select is(
-  (with u as (update public.log_entries set grams = 1
-              where id = 'bbbbbbbb-0000-0000-0000-000000000002' returning 1)
-   select count(*)::int from u),
-  0,
+select is_empty(
+  $$ update public.log_entries set grams = 1 where id = 'bbbbbbbb-0000-0000-0000-000000000002' returning 1 $$,
   'Alice cannot edit Bob''s log entry'
 );
-select is(
-  (with d as (delete from public.log_entries
-              where id = 'bbbbbbbb-0000-0000-0000-000000000002' returning 1)
-   select count(*)::int from d),
-  0,
+select is_empty(
+  $$ delete from public.log_entries where id = 'bbbbbbbb-0000-0000-0000-000000000002' returning 1 $$,
   'Alice cannot delete Bob''s log entry'
 );
 select throws_ok(
