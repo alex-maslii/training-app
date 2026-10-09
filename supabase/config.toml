@@ -228,28 +228,34 @@ enable_confirmations = false
 # If enabled, users will need to reauthenticate or have logged in recently to change their password.
 secure_password_change = false
 # Controls the minimum amount of time that must pass before sending another signup confirmation or password reset email.
-max_frequency = "1s"
+max_frequency = "60s"
 # Number of characters used in the email OTP.
 otp_length = 6
 # Number of seconds before the email OTP expires (defaults to 1 hour).
 otp_expiry = 900
 
-# Use a production-ready SMTP server
+# Production sends through custom SMTP (Gmail for now, see docs/BUILD_GUIDE.md),
+# configured in the Supabase dashboard so the address and app password stay out of
+# this public repo. Do not run `supabase config push` without first adding an
+# [auth.email.smtp] block here, or the push may turn custom SMTP off.
 # [auth.email.smtp]
 # enabled = true
-# host = "smtp.sendgrid.net"
+# host = "smtp.gmail.com"
 # port = 587
-# user = "apikey"
-# pass = "env(SENDGRID_API_KEY)"
-# admin_email = "admin@email.com"
-# sender_name = "Admin"
+# user = "env(SMTP_USER)"
+# pass = "env(SMTP_PASS)"
+# admin_email = "env(SMTP_USER)"
+# sender_name = "Calorie Tracker"
 
-# Sign-in uses a 6-digit email code, so the template must contain {{ .Token }}.
-# Disabled until custom SMTP is configured: the free tier rejects template changes
-# while the default Supabase email provider is in use.
-# [auth.email.template.magic_link]
-# subject = "Twój kod logowania / Your sign-in code"
-# content_path = "./supabase/templates/magic_link.html"
+# Sign-in uses a 6-digit email code, so the templates must contain {{ .Token }}.
+# New users get the confirmation email, returning users the magic link email.
+[auth.email.template.magic_link]
+subject = "Your sign-in code"
+content_path = "./supabase/templates/magic_link.html"
+
+[auth.email.template.confirmation]
+subject = "Your sign-in code"
+content_path = "./supabase/templates/magic_link.html"
 
 # Uncomment to customize email template
 # [auth.email.template.invite]
