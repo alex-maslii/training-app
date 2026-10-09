@@ -10,7 +10,7 @@
  * Usage: node scripts/import-bls.mjs path/to/BLS_4_0_Daten_2025_DE.xlsx
  * Output: supabase/seeds/foods_bls.sql
  */
-import { writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
 import ExcelJS from 'exceljs';
@@ -21,6 +21,8 @@ if (!input) {
   process.exit(1);
 }
 const output = fileURLToPath(new URL('../supabase/seeds/foods_bls.sql', import.meta.url));
+// Reviewed Polish names for common foods, keyed by BLS code. BLS has no Polish names.
+const namesPl = JSON.parse(readFileSync(new URL('./data/bls-names-pl.json', import.meta.url), 'utf8'));
 
 // BLS component code -> our nutrient key (packages/core/src/nutrients.ts).
 // BLS "CHO" is available carbohydrate (fibre excluded), matching EU labels.
@@ -73,18 +75,22 @@ for (let r = 2; r <= sheet.rowCount; r++) {
 
   const name = String(nameEn).trim();
   rows.push(
-    `(${sql('bls')}, ${sql(code)}, ${sql(name)}, ${sql(name)}, ${sql(String(nameDe).trim())}, ` +
+    `(${sql('bls')}, ${sql(code)}, ${sql(name)}, ${sql(namesPl[code] ?? null)}, ${sql(name)}, ` +
+      `${sql(String(nameDe).trim())}, ` +
       `${sql(JSON.stringify(nutrients))}::jsonb, true)`,
   );
 }
 
+const unknownCodes = Object.keys(namesPl).filter((code) => !rows.some((row) => row.startsWith(`('bls', '${code}',`)));
+if (unknownCodes.length > 0) throw new Error(`bls-names-pl.json has unknown BLS codes: ${unknownCodes.join(', ')}`);
+
 const statements = [];
 for (let i = 0; i < rows.length; i += BATCH_SIZE) {
   statements.push(
-    'insert into public.foods (source, external_id, name, name_en, name_de, nutrients, verified) values\n' +
+    'insert into public.foods (source, external_id, name, name_pl, name_en, name_de, nutrients, verified) values\n' +
       rows.slice(i, i + BATCH_SIZE).join(',\n') +
       '\non conflict (source, external_id) do update set\n' +
-      '  name = excluded.name, name_en = excluded.name_en, name_de = excluded.name_de,\n' +
+      '  name = excluded.name, name_pl = excluded.name_pl, name_en = excluded.name_en, name_de = excluded.name_de,\n' +
       '  nutrients = excluded.nutrients, verified = excluded.verified;',
   );
 }
