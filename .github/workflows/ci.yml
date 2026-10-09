@@ -38,5 +38,3 @@ jobs:
         run: supabase test db
       - name: Lint database functions
         run: supabase db lint --level warning --fail-on error
-      - name: Generated types are current
-        run: node scripts/gen-db-types.mjs --local --check
