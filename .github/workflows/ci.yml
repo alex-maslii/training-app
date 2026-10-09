@@ -24,3 +24,19 @@ jobs:
       - name: Expo SDK version check
         run: npx expo install --check
         working-directory: apps/mobile
+
+  database:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: supabase/setup-cli@v1
+        with:
+          version: 2.120.0
+      # Local Postgres in Docker with all migrations applied. No secrets needed.
+      - run: supabase db start
+      - name: RLS tests (pgTAP)
+        run: supabase test db
+      - name: Lint database functions
+        run: supabase db lint --level warning --fail-on error
+      - name: Generated types are current
+        run: node scripts/gen-db-types.mjs --local --check
