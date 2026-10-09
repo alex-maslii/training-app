@@ -210,7 +210,8 @@ Nutrient keys are fixed (energy_kcal, protein_g, carbs_available_g, fat_g, satur
 - [x] `supabase config push` applied; generated types in `src/lib/database.types.ts` (`npm run db:types`).
 - [x] Web sign-in verified end to end on 2026-10-09: owner signed in, profile row auto-created.
 - [x] Custom SMTP (2026-10-09): Gmail (`smtp.gmail.com:587`, owner's personal Gmail with an app password), set in the Supabase dashboard; 60 s minimum interval per user; English-only 6-digit code template for magic link and confirmation emails (`supabase/templates/magic_link.html`). Gmail allows ~500 emails/day and looks personal: move to a domain sender (e.g. Resend) before public launch, then add the Polish text back.
-- [ ] Apple Developer account; final bundle ID (placeholder `com.calorietracker.app`); Sign in with Apple.
+- [ ] Apple Developer account; Sign in with Apple. Bundle ID `com.alexmaslii.calorietracker` (also the Android package), fixed once the app is on a store.
+- [ ] Local Release build on the owner's iPhone with a free Apple ID (`npx expo run:ios --device --configuration Release`; expires after 7 days, no HealthKit).
 - [ ] EAS dev build installed on the owner's phone.
 - **Exit:** sign in on the phone and in a browser; an empty "Today" screen loads the profile from Supabase.
 
