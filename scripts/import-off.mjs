@@ -150,7 +150,8 @@ console.log(`Wrote ${files.length} batch files to ${outDir}`);
 
 if (apply) {
   const projectRef = process.env.SUPABASE_PROJECT_REF;
-  const target = projectRef ? ['--project-ref', projectRef] : ['--linked'];
+  // --project-ref selects the remote project but still needs --linked.
+  const target = projectRef ? ['--linked', '--project-ref', projectRef] : ['--linked'];
   const failed = [];
   for (const file of files) {
     console.log(`Applying ${file}`);
