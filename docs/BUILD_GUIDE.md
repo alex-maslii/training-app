@@ -13,8 +13,13 @@ Last updated: 2026-10-09
 - **Market:** European Union first, starting in Poland (owner's country). Global expansion later; do not hard-code EU assumptions where a setting would do (units, energy unit, salt vs sodium).
 - **Languages:** Polish and English from day one; other EU languages later.
 - **Platforms:** iOS first, web second, Android optional later (Android holds most of the Polish phone market, so it matters before wide launch).
-- **Workout sources:** COROS watch (writes to Apple Health and Strava), Garmin (same), manual entry.
-- **Core loop:** log food in under 10 seconds, see remaining calories and macros, workouts show up without manual effort.
+- **Workout sources:** Apple Watch, COROS and Garmin watches (all write to Apple Health; COROS and Garmin also to Strava), manual entry.
+- **Core loop:** log food in under 10 seconds, see calories burned today (resting + active, from the watch) against calories eaten, workouts show up without manual effort, and every scanned product gets a Yuka-style quality score.
+- **Owner's four product goals (2026-10-09):**
+  1. Connect watches (COROS, Apple Watch, Garmin) to get real calories burned.
+  2. Import workouts to count exercise calories.
+  3. Show the day's total burned (resting + active) against total eaten.
+  4. Rate food quality like the Yuka app: a 0–100 score per product with the reasons (nutrition, additives, organic) and better alternatives.
 
 ### Non-goals for v1
 - Social feed, friends, sharing.
@@ -90,9 +95,21 @@ All math lives in `packages/core` as pure, tested functions. UI never computes n
 - **Baseline expenditure (no exercise):** `BMR × NEAT factor` (1.2 sedentary … 1.5 very active job). Exercise is **not** in this factor, to avoid double counting.
 - **Daily budget:** `baseline − goal deficit + (exercise kcal × eat-back factor)`.
 - **Eat-back factor:** user setting, default 0.6, because watch and Strava estimates usually run high.
-- **Adaptive expenditure (Phase 5):** estimate real expenditure from intake and weight trend over a rolling 2–4 week window:
+- **With a watch (Apple Health):** total burned today = resting (basal) energy + active energy, both read from Apple Health. Then the profile's NEAT factor is not used (active energy already includes daily movement), and `daily budget = (resting + active × eat-back factor) − goal deficit`. Today shows burned so far, eaten, and remaining. Without a watch, use the BMR formula above.
+- **Adaptive expenditure (Phase 7):** estimate real expenditure from intake and weight trend over a rolling 2–4 week window:
   `TDEE ≈ avg daily intake − (Δ trend weight kg × 7700) / days`.
   Use an exponentially smoothed weight trend (α ≈ 0.1), not raw scale weight. Show it as a suggestion; never apply silently.
+
+### Food quality score (Yuka-style)
+Own transparent method, modelled on Yuka (0–100, higher is better), computed in `packages/core` and covered by tests:
+- **Nutrition, 60 %:** from the Nutri-Score (A–E and its underlying points) supplied by Open Food Facts; when Open Food Facts has no score, compute it from the nutrients where possible, otherwise show "not enough data".
+- **Additives, 30 %:** each E-number gets a risk level (none, limited, moderate, high) from a reviewed list in the repo, with a source per additive (EFSA opinions, Open Food Facts additive evaluations). Any high-risk additive caps the product's total score below 50, as Yuka does.
+- **Organic, 10 %:** EU organic label in Open Food Facts `labels_tags`.
+- **Bands:** 75–100 excellent, 50–74 good, 25–49 poor, 0–24 bad (green to red).
+- **Shown with reasons:** the score always comes with its breakdown (e.g. "high sugar", "contains E250 (moderate)") and the NOVA processing group as extra information.
+- **Better alternatives:** products in the same Open Food Facts category, sold in Poland, with a higher score.
+- **Generic foods (BLS) and custom foods:** no score until enough data exists; never invent one.
+- **Wording and legal care:** state facts and sources, not "dangerous"; Yuka was taken to court in France over how it described nitrite additives. Nutri-Score is a registered trademark: follow its graphic charter if the official logo is shown, otherwise show the letter in our own style. Add "general information, not medical advice".
 
 ### Workout deduplication
 The same COROS run may arrive from Apple Health **and** Strava. Two workouts are duplicates when they have the same sport type and their time ranges overlap by ≥ 80% of the shorter one. Keep one per group by source priority (user setting; default Apple Health > Strava > manual) and mark the rest `superseded`, never deleted.
@@ -106,6 +123,10 @@ The same COROS run may arrive from Apple Health **and** Strava. Two workouts are
 - Pull on app open and with background delivery (`enableBackgroundDelivery`) for workouts.
 - Upload to Supabase with `source = 'healthkit'` and `external_id = HKWorkout UUID`.
 - Permission text must explain why every type is requested; App Review checks this.
+
+### Garmin and COROS directly (later)
+- On iPhone both reach the app through Apple Health (Garmin Connect and COROS apps sync workouts and calories there), so no direct integration is needed for iOS users.
+- Direct APIs matter for Android and web users: Garmin Connect Developer Program (Health and Activity APIs, needs an approved business application) and the COROS API (partner application). Apply only when Android or web launch is near.
 
 ### Strava
 - OAuth 2.0 with scope `activity:read_all`. The token exchange happens in an Edge Function; the client secret never ships in the app. Store refresh tokens encrypted, readable only by the service role.
@@ -232,40 +253,55 @@ Nutrient keys are fixed (energy_kcal, protein_g, carbs_available_g, fat_g, satur
 - [ ] Owner test on web.
 - **Exit:** owner logs a full real day of eating on the phone in under 10 s per item, scanning 10 real pantry products shows correct nutrition (or the create form), and totals match a hand calculation.
 
-### Phase 2 — Faster logging
+Order decided 2026-10-09 from the owner's four goals: work that needs no Apple Developer account first (food score, Strava), Apple Health as soon as the paid account is approved.
+
+### Phase 2 — Food quality score (Yuka-style)
+- Import from Open Food Facts (CSV import and `food-lookup`): `nutriscore_grade`, `nutriscore_score`, `nova_group`, `additives_tags`, `labels_tags`, `categories_tags`; new columns on `foods`.
+- Reviewed additive risk list (`scripts/data/additives.json`: E-number, risk level, short reason in PL and EN, source link).
+- `qualityScore()` in `packages/core` (section 3), with tests for each band, the high-risk cap, and missing data.
+- Product screen: score badge, breakdown, additive list with explanations, NOVA group, sources; score shown in search and scan results.
+- "Better alternatives" list (same category, sold in Poland, higher score).
+- **Exit:** scanning 20 real products shows a score and reasons that match a hand check against Open Food Facts; no score is shown where data is missing.
+
+### Phase 3 — Strava workouts
+- Register a Strava API app; `strava-oauth` and `strava-webhook` Edge Functions.
+- Connect/disconnect in Settings; backfill the last 30 days within rate limits.
+- Workout list on Today; exercise calories added to the budget with the eat-back factor.
+- Strava attribution in the UI. Strava data never goes to an AI model.
+- **Exit:** a COROS or Garmin run appears via Strava within minutes and the budget updates; disconnecting removes stored tokens.
+
+### Phase 4 — Apple Health: Apple Watch, Garmin, COROS (needs the paid Apple Developer account)
+- HealthKit permissions and initial import (last 30 days): workouts, active energy, resting (basal) energy, body mass.
+- Background delivery for new workouts; upload to `workouts`.
+- Deduplication against Strava workouts (section 3) with tests.
+- **Exit:** an Apple Watch, COROS or Garmin workout appears without opening the app, shows once even if Strava also has it, and the budget updates.
+
+### Phase 5 — Daily energy balance
+- Today screen: burned so far (resting + active), eaten, remaining, with a simple bar or ring; watch mode vs formula mode (section 3).
+- Week view: daily burned vs eaten.
+- **Exit:** a day with a watch matches Apple Health's own totals; a day without one matches the BMR formula by hand.
+
+### Phase 6 — Faster logging
 - Recent, frequent, and favorite foods; copy a meal from yesterday.
 - Custom foods and recipes.
 - Micronutrient detail view (the Cronometer-style feature).
 - **Exit:** a week of real use with no item taking longer than 15 s to log.
 
-### Phase 3 — Workouts via Apple Health
-- HealthKit permissions and initial import (last 30 days).
-- Background delivery for new workouts; upload to `workouts`.
-- Exercise calories added to the budget with the eat-back factor.
-- Workouts list on Today and a workout detail sheet.
-- **Exit:** a COROS run appears in the app within minutes without opening it, and the budget updates.
-
-### Phase 4 — Strava
-- Register a Strava API app; `strava-oauth` and `strava-webhook` Edge Functions.
-- Connect/disconnect in Settings; backfill the last 30 days within rate limits.
-- Deduplication against HealthKit workouts (section 3) with tests.
-- Strava attribution in the UI.
-- **Exit:** the same run from COROS shows once, not twice; disconnecting removes stored tokens.
-
-### Phase 5 — Weight and adaptive targets
+### Phase 7 — Weight and adaptive targets
 - Weight logging (manual + HealthKit body mass), trend chart.
 - Adaptive expenditure estimate shown as a suggested target change.
 - Weekly summary: average intake, average burn, trend change.
 - **Exit:** after 3 weeks of data the suggested TDEE is within a plausible range and the math is covered by tests.
 
-### Phase 6 — iOS polish and TestFlight
+### Phase 8 — iOS polish and TestFlight
 - Empty states, error states, offline behaviour (cached queries; queue writes while offline).
 - Accessibility pass (Dynamic Type, VoiceOver labels, contrast).
 - Privacy policy (Polish + English) and App Store privacy labels; GDPR consent for health data, data export, account deletion.
+- Custom email sender on our own domain instead of Gmail.
 - EU trader status in App Store Connect; release in Poland first, then other EU stores.
 - **Exit:** TestFlight build used daily for 2 weeks without data loss.
 
-### Phase 7 — Web
+### Phase 9 — Web
 - Run the same `expo-router` app on web; fix layout for wide screens (two-column Today view).
 - Hide HealthKit and barcode features on web; show a "connect from iPhone" hint.
 - Strava connect works on web as-is (server-side).
@@ -273,6 +309,8 @@ Nutrient keys are fixed (energy_kcal, protein_g, carbs_available_g, fat_g, satur
 - **Exit:** the owner can review a day and log food from a laptop, with the same data as the phone.
 
 ### Later
+- Direct Garmin and COROS integrations (for Android and web users; section 4).
+- Training-timing hints: label foods as good before or after a workout (easy carbs and little fat or fibre before; carbs plus 20–40 g protein after), using workout times. General guidance, not medical advice.
 - Android with Health Connect.
 - Home-screen widget (remaining calories).
 - AI-assisted photo or text food logging. Must not use Strava data (policy).
@@ -313,10 +351,12 @@ Nutrient keys are fixed (energy_kcal, protein_g, carbs_available_g, fat_g, satur
 | Phase | Status |
 |---|---|
 | 0 Foundations | Web and iPhone (free Apple ID Release build) working with code sign-in; remaining: Apple Developer account |
-| 1 Food logging MVP | Live on Supabase; waiting for owner test and Data sources screen |
-| 2 Faster logging | Not started |
-| 3 Apple Health workouts | Not started |
-| 4 Strava | Not started |
-| 5 Weight and adaptive targets | Not started |
-| 6 iOS polish and TestFlight | Not started |
-| 7 Web | Not started |
+| 1 Food logging MVP | Live on web and iPhone; Data sources screen and Polish names done; waiting for the owner's phone test |
+| 2 Food quality score (Yuka-style) | Not started; next |
+| 3 Strava workouts | Not started |
+| 4 Apple Health (Apple Watch, Garmin, COROS) | Waiting for the paid Apple Developer account |
+| 5 Daily energy balance | Not started |
+| 6 Faster logging | Not started |
+| 7 Weight and adaptive targets | Not started |
+| 8 iOS polish and TestFlight | Not started |
+| 9 Web | Not started |
