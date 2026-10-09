@@ -12,6 +12,7 @@ export default function AppLayout() {
       <Stack.Screen name="food/new" options={{ title: t('newFood.title') }} />
       <Stack.Screen name="entry/[id]" options={{ title: t('entry.title') }} />
       <Stack.Screen name="profile" options={{ title: t('profile.title') }} />
+      <Stack.Screen name="sources" options={{ title: t('sources.title') }} />
     </Stack>
   );
 }

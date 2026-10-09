@@ -40,7 +40,8 @@
     "account": "Account",
     "language": "Language",
     "signOut": "Sign out",
-    "profile": "Profile and goal"
+    "profile": "Profile and goal",
+    "sources": "Data sources"
   },
   "language": {
     "pl": "Polski",
@@ -148,5 +149,25 @@
   },
   "app": {
     "name": "Calorie Tracker"
+  },
+  "sources": {
+    "title": "Data sources",
+    "intro": "Nutrition values come from these databases. Packaged products can change, so check the label when in doubt.",
+    "off": {
+      "name": "Open Food Facts",
+      "body": "Packaged products and barcodes, contributed by volunteers. Data © Open Food Facts contributors, available under the Open Database License (ODbL).",
+      "website": "openfoodfacts.org",
+      "licence": "Open Database License (ODbL)"
+    },
+    "bls": {
+      "name": "German Nutrient Database (BLS 4.0)",
+      "body": "Generic foods such as fruit, vegetables, meat and dishes. Source: Max Rubner-Institut (2025): Bundeslebensmittelschlüssel (BLS), Version 4.0. Karlsruhe.",
+      "website": "Dataset (doi.org)"
+    },
+    "custom": {
+      "name": "Your foods",
+      "body": "Foods you create are visible only to you."
+    },
+    "disclaimer": "Values are for general information and are not medical advice."
   }
 }

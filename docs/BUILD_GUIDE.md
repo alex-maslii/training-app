@@ -227,7 +227,7 @@ Nutrient keys are fixed (energy_kcal, protein_g, carbs_available_g, fat_g, satur
 - [x] Push `20261009150000_food_stores.sql`, run the first import (21,076 products), redeploy `food-lookup`, set GitHub secrets (`SUPABASE_ACCESS_TOKEN` scoped to Database read-write on `nutrition-app`, expires ~2027-01-07; `SUPABASE_PROJECT_REF`).
 - [x] Pre-commit review fixes: NEAT levels 1.2/1.3/1.4/1.5 (match `numeric(3,2)` and the no-exercise rule), blank OFF values are missing not zero, alcohol and polyols in the energy check, grams 1–5000 rounded to 2 decimals everywhere, query cache cleared on account change, secrets only in the import step, pinned Supabase CLI 2.120.0.
 - [ ] Redeploy `food-lookup` (8 s Open Food Facts timeout, serving-size bounds) and re-run the import (beers and sugar-free products now pass).
-- [ ] Settings → "Data sources" screen crediting Open Food Facts (ODbL) and BLS.
+- [x] Settings → "Data sources" screen crediting Open Food Facts (ODbL) and BLS; the source line on each food links to it.
 - [ ] Owner test on web.
 - **Exit:** owner logs a full real day of eating on the phone in under 10 s per item, scanning 10 real pantry products shows correct nutrition (or the create form), and totals match a hand calculation.
 
@@ -282,7 +282,7 @@ Nutrient keys are fixed (energy_kcal, protein_g, carbs_available_g, fat_g, satur
 
 **Now (no Apple account, ~$0/month):**
 - GitHub Actions on every PR (exists): typecheck, lint, Vitest. Add `npx expo-doctor`, `npm audit --audit-level=high`, gitleaks secret scanning, Dependabot (npm + GitHub Actions, weekly).
-- Database job on PRs touching `supabase/**`: `supabase db start`, apply migrations, `supabase db lint`, pgTAP tests for RLS (`supabase test db`), check generated types are current.
+- Done 2026-10-09: `database` CI job (required on `main`): `supabase db start`, pgTAP RLS tests in `supabase/tests/database/` (`supabase test db`), `supabase db lint`. A generated-types check was dropped because local and hosted generation differ.
 - Production deploy from `main` behind a GitHub Environment with manual approval: `supabase db push` + `supabase functions deploy`, scoped token.
 - EAS setup: `eas.json` with development / preview / production profiles, `appVersionSource: remote`; iOS simulator and Android builds need no Apple account. EAS Workflows (`.eas/workflows/`) for mobile builds; GitHub Actions stays the test gate.
 - Per-PR preview: EAS Update to a branch named after the PR (OTA update opened in the dev client), not a full build per PR.

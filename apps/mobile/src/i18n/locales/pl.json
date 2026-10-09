@@ -40,7 +40,8 @@
     "account": "Konto",
     "language": "Język",
     "signOut": "Wyloguj się",
-    "profile": "Profil i cel"
+    "profile": "Profil i cel",
+    "sources": "Źródła danych"
   },
   "language": {
     "pl": "Polski",
@@ -148,5 +149,25 @@
   },
   "app": {
     "name": "Calorie Tracker"
+  },
+  "sources": {
+    "title": "Źródła danych",
+    "intro": "Wartości odżywcze pochodzą z tych baz danych. Skład produktów może się zmieniać, więc w razie wątpliwości sprawdź etykietę.",
+    "off": {
+      "name": "Open Food Facts",
+      "body": "Produkty paczkowane i kody kreskowe dodawane przez wolontariuszy. Dane © współtwórcy Open Food Facts, dostępne na licencji Open Database License (ODbL).",
+      "website": "openfoodfacts.org",
+      "licence": "Licencja Open Database License (ODbL)"
+    },
+    "bls": {
+      "name": "Niemiecka baza wartości odżywczych (BLS 4.0)",
+      "body": "Produkty podstawowe, np. owoce, warzywa, mięso i dania. Źródło: Max Rubner-Institut (2025): Bundeslebensmittelschlüssel (BLS), Version 4.0. Karlsruhe.",
+      "website": "Zbiór danych (doi.org)"
+    },
+    "custom": {
+      "name": "Twoje produkty",
+      "body": "Produkty, które tworzysz, widzisz tylko Ty."
+    },
+    "disclaimer": "Wartości mają charakter informacyjny i nie stanowią porady medycznej."
   }
 }
