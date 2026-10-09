@@ -9,7 +9,7 @@
     "userInterfaceStyle": "automatic",
     "ios": {
       "icon": "./assets/expo.icon",
-      "bundleIdentifier": "com.calorietracker.app",
+      "bundleIdentifier": "com.alexmaslii.calorietracker",
       "supportsTablet": false
     },
     "android": {
@@ -20,7 +20,7 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.calorietracker.app"
+      "package": "com.alexmaslii.calorietracker"
     },
     "web": {
       "output": "single",
