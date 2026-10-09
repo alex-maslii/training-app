@@ -1,0 +1,22 @@
+{
+  "name": "calorie-tracker",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "db:types": "node scripts/gen-db-types.mjs",
+    "seed:bls": "node scripts/import-bls.mjs",
+    "import:off": "node scripts/import-off.mjs"
+  },
+  "devDependencies": {
+    "exceljs": "^4.4.0"
+  },
+  "engines": {
+    "node": ">=22.18"
+  }
+}

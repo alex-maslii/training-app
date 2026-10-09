@@ -1,0 +1,152 @@
+{
+  "common": {
+    "error": "Something went wrong. Please try again.",
+    "save": "Save",
+    "delete": "Delete",
+    "kcal": "kcal",
+    "gramsAmount": "{{amount}} g"
+  },
+  "signIn": {
+    "title": "Sign in",
+    "subtitle": "We'll email you a 6-digit code.",
+    "emailLabel": "Email",
+    "emailPlaceholder": "you@example.com",
+    "sendCode": "Send code",
+    "codeLabel": "Code from email",
+    "codeSentTo": "Code sent to {{email}}",
+    "verify": "Sign in",
+    "changeEmail": "Use a different email",
+    "invalidEmail": "Enter a valid email address.",
+    "invalidCode": "Enter the 6-digit code."
+  },
+  "tabs": {
+    "today": "Today",
+    "settings": "Settings"
+  },
+  "today": {
+    "eaten": "Eaten",
+    "remaining": "Remaining",
+    "completeProfile": "Complete your profile to get a daily calorie target.",
+    "target": "Target",
+    "over": "Over",
+    "setUpProfile": "Set up profile",
+    "addFood": "Add food",
+    "previousDay": "Previous day",
+    "nextDay": "Next day",
+    "goToToday": "Today",
+    "emptyMeal": "Nothing logged yet"
+  },
+  "settings": {
+    "account": "Account",
+    "language": "Language",
+    "signOut": "Sign out",
+    "profile": "Profile and goal"
+  },
+  "language": {
+    "pl": "Polski",
+    "en": "English"
+  },
+  "meals": {
+    "breakfast": "Breakfast",
+    "lunch": "Lunch",
+    "dinner": "Dinner",
+    "snack": "Snacks"
+  },
+  "nutrients": {
+    "energy_kcal": "Energy",
+    "protein_g": "Protein",
+    "carbs_available_g": "Carbohydrates",
+    "sugar_g": "of which sugars",
+    "fat_g": "Fat",
+    "saturated_fat_g": "of which saturates",
+    "fiber_g": "Fibre",
+    "salt_g": "Salt"
+  },
+  "add": {
+    "title": "Add food",
+    "searchPlaceholder": "Search foods (e.g. oat flakes)",
+    "scan": "Scan barcode",
+    "createFood": "Create food",
+    "noResults": "No foods found. Try another word or create the food.",
+    "typeMore": "Type at least 2 letters.",
+    "unverified": "Unverified",
+    "kcalPer100": "{{kcal}} kcal / 100 g"
+  },
+  "food": {
+    "title": "Food",
+    "amount": "Amount",
+    "serving": "Serving ({{grams}} g)",
+    "meal": "Meal",
+    "addToLog": "Add to {{meal}}",
+    "invalidGrams": "Enter an amount between 1 and 5000 g.",
+    "source": {
+      "bls": "German Nutrient Database (BLS 4.0)",
+      "off": "Open Food Facts",
+      "custom": "Your food"
+    }
+  },
+  "entry": {
+    "title": "Edit entry",
+    "deleteConfirm": "Delete this entry?"
+  },
+  "scan": {
+    "title": "Scan barcode",
+    "permission": "Camera access is needed to scan barcodes.",
+    "allowCamera": "Allow camera",
+    "manualLabel": "Or type the barcode",
+    "lookUp": "Look up",
+    "looking": "Looking up product…",
+    "invalid": "That is not a valid barcode. Check the digits.",
+    "inStore": "This is an in-store code (weighed or packed in the shop). Search for the food instead.",
+    "notFound": "Product not found. You can add it yourself.",
+    "incomplete": "This product has missing or doubtful nutrition data. Please check it against the label.",
+    "unavailable": "The product database is not responding. Try again in a minute.",
+    "scanAgain": "Scan again"
+  },
+  "newFood": {
+    "title": "New food",
+    "name": "Name",
+    "brand": "Brand (optional)",
+    "barcode": "Barcode",
+    "nutritionPer100": "Nutrition per 100 g, from the label",
+    "serving": "Serving size (optional)",
+    "nameRequired": "Enter a name.",
+    "energyRequired": "Enter energy (kcal).",
+    "numberInvalid": "Use numbers only, e.g. 12,5.",
+    "energyMismatch": "Energy does not match protein, carbs and fat. Check the label values."
+  },
+  "profile": {
+    "title": "Profile",
+    "sex": "Sex (for the calorie formula)",
+    "male": "Male",
+    "female": "Female",
+    "birthDate": "Date of birth",
+    "birthDatePlaceholder": "YYYY-MM-DD",
+    "height": "Height",
+    "weight": "Current weight",
+    "activity": "Daily activity (without workouts)",
+    "activityLevels": {
+      "sedentary": "Mostly sitting",
+      "light": "Lightly active",
+      "active": "On my feet a lot",
+      "veryActive": "Physical job"
+    },
+    "goal": "Goal",
+    "goals": {
+      "-500": "Lose ~0.5 kg/week",
+      "-250": "Lose slowly",
+      "0": "Maintain",
+      "250": "Gain slowly"
+    },
+    "consent": "I agree to the storage of my health data (weight, body measurements, food intake) to calculate my targets. I can withdraw consent and delete my data at any time.",
+    "consentRequired": "Consent is needed to store your weight.",
+    "invalidBirthDate": "Enter a date like 1990-05-31.",
+    "invalidHeight": "Enter height in cm (50–272).",
+    "invalidWeight": "Enter weight in kg (20–400).",
+    "incomplete": "Fill in all fields.",
+    "yourTarget": "Your daily target: {{kcal}} kcal"
+  },
+  "app": {
+    "name": "Calorie Tracker"
+  }
+}
