@@ -30,15 +30,24 @@ const content =
   `export type LogEntry = Tables<'log_entries'>\n`;
 
 if (args.includes('--check')) {
-  // The PostgREST version differs between local and hosted projects; ignore it.
-  const normalize = (text) => text.replace(/PostgrestVersion: "[^"]*"/, 'PostgrestVersion: ""');
-  const committed = normalize(readFileSync(output, 'utf8')).split('\n');
-  const fresh = normalize(content).split('\n');
-  const line = fresh.findIndex((text, i) => text !== committed[i]);
-  if (line !== -1 || committed.length !== fresh.length) {
-    const at = line === -1 ? Math.min(fresh.length, committed.length) : line;
+  // Local and hosted generation format the same types differently (one line vs
+  // several, trailing commas, leading |) and report different PostgREST versions.
+  // Compare tokens only.
+  const normalize = (text) =>
+    text
+      .replace(/PostgrestVersion: "[^"]*"/, '')
+      .replace(/\s+/g, '')
+      .replace(/[;,]/g, '')
+      .replace(/([=:(<])\|/g, '$1');
+  const committed = normalize(readFileSync(output, 'utf8'));
+  const fresh = normalize(content);
+  if (committed !== fresh) {
+    let at = 0;
+    while (committed[at] === fresh[at]) at++;
     console.error(`${output} is out of date. Run \`npm run db:types\` and commit the result.`);
-    console.error(`First difference at line ${at + 1}:\n  committed: ${committed[at]}\n  generated: ${fresh[at]}`);
+    console.error(`  committed: …${committed.slice(Math.max(0, at - 40), at + 80)}`);
+    console.error(`  generated: …${fresh.slice(Math.max(0, at - 40), at + 80)}`);
+    console.error(`  (generated ${generated.length} characters)`);
     process.exit(1);
   }
   console.log('Database types are up to date.');
